@@ -1,0 +1,86 @@
+﻿@page "/letter-upload"
+
+@inject ChristmasContext context
+@inject ChristmasLetterAIReader aiReader
+
+<h1 class="text-center text-primary">Carica Letterine per Babbo Natale</h1>
+<form>
+    <div class="mb-3">
+        <label for="firstName" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter name" required @bind="christmasLetter.KidFirstName">
+    </div>
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Cognome</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter surname" required @bind="christmasLetter.KidLastName">
+    </div>
+    <div class="mb-3">
+        <label for="address" class="form-label">Indirizzo</label>
+        <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter address" required @bind="christmasLetter.Address"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="letterUpload" class="form-label">Foto della letterina</label>
+        <InputFile class="form-control" type="file" id="letterUpload" name="letterUpload" accept="image/*" required OnChange="UploadFileAsync" />
+    </div>
+
+    @if (base64data is not null)
+    {
+        <img src="@base64data" />
+    }
+
+    <button type="button" class="btn btn-primary" @onclick="SubmitDataAsync">Submit</button>
+</form>
+
+@code {
+
+    private ChristmasLetter christmasLetter = new ChristmasLetter();
+
+    private MemoryStream fileStream;
+    private string base64data;
+    private string contentType;
+
+    private async Task UploadFileAsync(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            base64data = null;
+            var file = e.File;
+
+            fileStream = new MemoryStream();
+            contentType = file.ContentType;
+
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(fileStream);
+
+            var resizedFile = await file.RequestImageFileAsync(file.ContentType, 300, 300);
+            using var resizedImageStream = new MemoryStream();
+            using var stream = resizedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+            await stream.CopyToAsync(resizedImageStream);
+
+            base64data = "data:image/png;base64," + Convert.ToBase64String(resizedImageStream.ToArray());
+            StateHasChanged();
+        }
+        catch (Exception ex) { }
+    }
+
+    private async Task SubmitDataAsync()
+    {
+        try
+        {
+            christmasLetter.Id = Guid.NewGuid();
+            // christmasLetter.LetterPhotoUri = base64data;
+            await context.ChristmasLetters.AddAsync(christmasLetter);
+            fileStream.Position = 0;
+
+            await aiReader.UpdateLetterAsync(fileStream, contentType, christmasLetter);
+
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            christmasLetter = new ChristmasLetter();
+        }
+    }
+}

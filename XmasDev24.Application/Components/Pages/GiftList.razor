@@ -1,0 +1,55 @@
+﻿@page "/list"
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject ChristmasContext context;
+
+<h1 class="text-center text-primary">Gifts List</h1>
+
+<!-- ricerca per nome cognome, indirizzo o regalo -->
+<div class="row mb-5">
+    <div class="col-6 offset-3">
+        <input type="text" class="form-control" placeholder="Search" @bind="search" />
+    </div>
+</div>
+
+<QuickGrid Items="@GetChristmasLetters()" Pagination="pagination">
+    <PropertyColumn Property="l => l.KidFirstName" Title="Nome" />
+    <PropertyColumn Property="l => l.KidLastName" Title="Cognome" />
+    <PropertyColumn Property="l => l.Address" Title="Indirizzo" />
+    <PropertyColumn Property="l => l.Delivered" Title="Consegnato" />
+    <PropertyColumn Property="l => l.LetterPhotoUri" Title="" />
+    <PropertyColumn Property="l => l.LetterText" Title="Letterina" />
+    <TemplateColumn Title="Regali">
+        <ul>
+            @foreach (var gift in context.Gifts)
+            {
+                <li>@gift</li>
+            }
+        </ul>
+    </TemplateColumn>
+
+</QuickGrid>
+
+<Paginator State="pagination" />
+
+@code {
+
+    private PaginationState pagination = new PaginationState() { ItemsPerPage = 20 };
+    private string search;
+
+    private IQueryable<ChristmasLetter> GetChristmasLetters()
+    {
+        IQueryable<ChristmasLetter> result = context.ChristmasLetters;
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            result = result.Where(l => l.KidFirstName.Contains(search) 
+                || l.KidLastName.Contains(search) 
+                || l.Address.Contains(search) 
+                || l.LetterText.Contains(search));
+        }
+
+        return result;
+
+    }
+}
