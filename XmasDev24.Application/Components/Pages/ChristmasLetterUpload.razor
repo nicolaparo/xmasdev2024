@@ -2,6 +2,7 @@
 
 @inject ChristmasContext context
 @inject ChristmasLetterAIReader aiReader
+@inject BlobContainerClient blobContainerClient
 
 <h1 class="text-center text-primary">Carica Letterine per Babbo Natale</h1>
 <form>
@@ -37,6 +38,7 @@
     private MemoryStream fileStream;
     private string base64data;
     private string contentType;
+    private string fileName;
 
     private async Task UploadFileAsync(InputFileChangeEventArgs e)
     {
@@ -47,10 +49,13 @@
 
             fileStream = new MemoryStream();
             contentType = file.ContentType;
+            fileName = file.Name;
 
-            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024).CopyToAsync(fileStream);
+            await file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)
+                .CopyToAsync(fileStream);
 
             var resizedFile = await file.RequestImageFileAsync(file.ContentType, 300, 300);
+
             using var resizedImageStream = new MemoryStream();
             using var stream = resizedFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
             await stream.CopyToAsync(resizedImageStream);
@@ -66,11 +71,17 @@
         try
         {
             christmasLetter.Id = Guid.NewGuid();
-            // christmasLetter.LetterPhotoUri = base64data;
             await context.ChristmasLetters.AddAsync(christmasLetter);
             fileStream.Position = 0;
 
-            await aiReader.UpdateLetterAsync(fileStream, contentType, christmasLetter);
+            var blobName = $"{christmasLetter.Id}{Path.GetExtension(fileName)}";
+
+            var blobClient = blobContainerClient.GetBlobClient(blobName);
+            await blobClient.UploadAsync(fileStream);
+
+            var uri = blobClient.GenerateSasUri(new(BlobContainerSasPermissions.Read, DateTime.Now.AddDays(3650)));
+
+            christmasLetter.LetterPhotoUri = uri.ToString();
 
             await context.SaveChangesAsync();
         }

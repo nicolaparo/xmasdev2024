@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmasDev24.Data", "XmasDev24
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmasDev24.Core", "XmasDev24.Core\XmasDev24.Core.csproj", "{C652DFC4-CCB2-40E1-A40C-524FDAEDDAC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmasDev24.Functions", "XmasDev24.Functions\XmasDev24.Functions.csproj", "{DF990E84-D34B-4F50-B861-727CC93C2F36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C652DFC4-CCB2-40E1-A40C-524FDAEDDAC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C652DFC4-CCB2-40E1-A40C-524FDAEDDAC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C652DFC4-CCB2-40E1-A40C-524FDAEDDAC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF990E84-D34B-4F50-B861-727CC93C2F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF990E84-D34B-4F50-B861-727CC93C2F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF990E84-D34B-4F50-B861-727CC93C2F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF990E84-D34B-4F50-B861-727CC93C2F36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

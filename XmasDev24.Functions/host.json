@@ -1,0 +1,15 @@
+{
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "MyNamespace.HttpTrigger": "Information"
+    }
+  },
+  "extensions": {
+    "serviceBus": {
+      "maxMessageBatchSize": 1,
+      "maxConcurrentCalls": 1,
+      "maxConcurrentSessions": 1
+    }
+  }
+}

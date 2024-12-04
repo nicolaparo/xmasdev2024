@@ -1,4 +1,5 @@
 using Azure.AI.OpenAI;
+using Azure.Storage.Blobs;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
@@ -20,6 +21,7 @@ namespace XmasDev24.Application
             var connectionString = builder.Configuration["SqlConnectionString"];
             var endpoint = builder.Configuration["AzureOpenAIEndpoint"];
             var apiKey = builder.Configuration["AzureOpenAIKey"];
+            var storageConnectionString = builder.Configuration["StorageConnectionString"];
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
@@ -32,6 +34,8 @@ namespace XmasDev24.Application
             builder.Services.AddKeyedSingleton("imageToTextChatClient", CreateChatClient("gpt-4o"));
             builder.Services.AddKeyedSingleton("giftsExtractorChatClient", CreateChatClient("gpt-4o-mini"));
             builder.Services.AddSingleton<ChristmasLetterAIReader>();
+
+            builder.Services.AddSingleton(new BlobServiceClient(storageConnectionString).GetBlobContainerClient("christmasletters"));
 
             builder.Services.AddQuickGridEntityFrameworkAdapter();
 
@@ -57,6 +61,9 @@ namespace XmasDev24.Application
             {
                 await scope.ServiceProvider.GetRequiredService<ChristmasContext>()
                     .Database.EnsureCreatedAsync();
+
+                await scope.ServiceProvider.GetRequiredService<BlobContainerClient>()
+                    .CreateIfNotExistsAsync();
             }
 
             app.Run();
