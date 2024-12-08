@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @inject ChristmasContext context;
 
-<h1 class="text-center text-primary">Gifts List</h1>
+<h1 class="text-center text-primary">Elenco Regali</h1>
 
 <!-- ricerca per nome cognome, indirizzo o regalo -->
 <div class="row mb-5">
@@ -16,8 +16,6 @@
     <PropertyColumn Property="l => l.KidFirstName" Title="Nome" />
     <PropertyColumn Property="l => l.KidLastName" Title="Cognome" />
     <PropertyColumn Property="l => l.Address" Title="Indirizzo" />
-    <PropertyColumn Property="l => l.Delivered" Title="Consegnato" />
-    <PropertyColumn Property="l => l.LetterPhotoUri" Title="" />
     <PropertyColumn Property="l => l.LetterText" Title="Letterina" />
     <TemplateColumn Title="Regali">
         <ul>
@@ -26,6 +24,13 @@
                 <li>@gift</li>
             }
         </ul>
+    </TemplateColumn>
+    <PropertyColumn Property="l => l.Delivered" Title="Consegnato" />
+    <TemplateColumn Title="Foto">
+        @if (!string.IsNullOrWhiteSpace(context.LetterPhotoUri))
+        {
+            <a href="@context.LetterPhotoUri" target="_blank">Foto</a>
+        }
     </TemplateColumn>
 
 </QuickGrid>

@@ -7,10 +7,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <!--<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" />-->
+    <!-- NO! <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" /> NO! -->
+    <!-- NO! <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" /> NO! -->
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.18.2" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
-    <!--<PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />-->
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.0.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.2.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.ServiceBus" Version="5.22.0" />
@@ -30,9 +30,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
   </ItemGroup>
 </Project>
